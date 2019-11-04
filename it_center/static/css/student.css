@@ -1,0 +1,40 @@
+.student-img{
+    margin:0 auto;
+    padding:auto;
+    width: 40px;
+    height: 40px; 
+}
+.paginate-student{ 
+    position: absolute;
+    right:0;
+    margin:auto;
+    top:25px;
+}
+.paginate-student a{ 
+    color: #cccccc;
+    border: solid 1px rgb(200, 200, 200) ;
+}
+.paginate-student a:hover{
+   background-color: #2ecc71;
+   color:white;
+}
+
+.paginate-student .btn-green{ 
+    color:white;  
+}
+ 
+
+.remove-student{
+    position: absolute;
+    right:0;
+    margin:auto;
+    top:25px;
+    opacity: 0.5;
+    color:white;
+}
+
+.remove-student:hover{ 
+    opacity: 1;
+    color:white;
+}
+

@@ -1,0 +1,40 @@
+.teacher-img{
+    margin:0 auto;
+    padding:auto;
+    width: 40px;
+    height: 40px; 
+}
+.paginate-teacher{ 
+    position: absolute;
+    right:0;
+    margin:auto;
+    top:25px;
+}
+.paginate-teacher a{ 
+    color: #cccccc;
+    border: solid 1px rgb(200, 200, 200) ;
+}
+.paginate-teacher a:hover{
+   background-color: #2ecc71;
+   color:white;
+}
+
+.paginate-teacher .btn-green{ 
+    color:white;  
+}
+ 
+
+.remove-teacher{
+    position: absolute;
+    right:0;
+    margin:auto;
+    top:25px;
+    opacity: 0.5;
+    color:white;
+}
+
+.remove-teacher:hover{ 
+    opacity: 1;
+    color:white;
+}
+

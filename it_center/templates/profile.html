@@ -1,0 +1,339 @@
+{% extends "layout.html" %} {% block content %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/profile.css') }}"
+/>
+{% with messages = get_flashed_messages(with_categories=true) %} 
+{% if messages %} 
+  {% for category, message in messages %}
+      <div class="alert alert-{{ category }} ml-3">
+      {{ message }}
+      </div>
+  {% endfor %} 
+{% endif %}
+{% endwith %} 
+<div class="col-md-12">
+  <div class="row">
+    <div class="heading">
+      <h1>Profile</h1>  
+    </div>
+  
+  </div>
+</div>
+
+<div class="cards">
+  <div class="row"> 
+    <div class="col-md-12">
+      <div class="card">
+        <a href="#" class="btn-edit-profile"><i class="fas fa-edit"></i></a>
+        <div class="user-img"><img  alt="avatar" src="{{url_for('static',filename='profile_pics/'+image_file)}}"></div>
+        <span class="name">{{current_user.user.first_name + " " +current_user.user.last_name}}</span>
+        <hr />
+        
+        <div class="row">
+            <div class="col-md-4">
+                <span class="education">Phone</span>
+              </div>
+              <div class="col-md-8">
+                <span class="schools">+84 {{ current_user.user.phone[1:] }}</span>
+              </div> 
+            <div class="col-md-4">
+                <span class="education">Address</span>
+              </div>
+              <div class="col-md-8">
+                <span class="schools">{{ current_user.user.address }}</span>
+              </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <span class="education">Email</span>
+              </div>
+              <div class="col-md-8">
+                <span class="schools">{{ current_user.user.email }}</span>
+              </div> 
+            <div class="col-md-4">
+                <span class="education">Salary</span>
+              </div>
+              <div class="col-md-8">
+                <span class="schools">{{ current_user.user.salary }}</span>
+              </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <span class="education">Birthday</span>
+              </div>
+              <div class="col-md-8">
+                <span class="schools">{{ current_user.user.birth }}</span>
+              </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <span class="education">Gender</span>
+              </div>
+              <div class="col-md-8">
+                <span class="schools">{{ current_user.user.gender }}</span>
+              </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <span class="education">Role</span>
+              </div>
+              <div class="col-md-8">
+                <span class="schools">{{ current_user.user.role.name }}</span>
+              </div>
+        </div>
+      </div>
+      <div class="card">
+        <h1>Target Today</h1>
+        <span class="date">
+          Sep 23, 2019
+        </span>
+        <hr />
+        <div class="col-md-4">
+          <span class="education">Target</span>
+          <span class="education">Sold</span>
+        </div>
+        <div class="col-md-8">
+          <span class="schools currency"> ???</span>
+          <span class="schools currency"> ???</span>
+        </div>
+      </div>
+      <div class="card">
+        <h1>Ranking Staff of Week</h1>
+        <span class="date">
+          Week 10
+        </span>
+        <hr />
+        <div class="col-md-3">
+          <span class="education"><i class="fas fa-medal gold"></i></span>
+          <span class="education"><i class="fas fa-medal silver"></i></span>
+          <span class="education"><i class="fas fa-medal copper"></i></span>
+        </div>
+        <div class="col-md-9">
+          <span class="schools medal">Pham Anh Duy</span>
+          <span class="schools medal">Pham Anh Duy</span>
+          <span class="schools medal">Pham Anh Duy</span>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+{% if current_user.user.role.name == 'academic' or current_user.user.role.name == 'cashier' %}
+ 
+<div class="heading">
+  <h1>Salary Table</h1>  
+</div>
+<div class="col-md-12 mb-5">
+<div class="row">
+  <table>
+    <thead>
+      <tr>
+        <th>CODE</th>
+        <th>FROM</th>
+        <th>TO</th>
+        <th>BASIC SALARY</th>  
+        <th>PAYMENT</th> 
+        <th>DATE PAID</th>
+        <th>DATE CREATED</th> 
+        <th>STATUS</th>
+        <th>OPTION</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for receipt in receipts %}
+      <tr> 
+        <td>{{ receipt.id }}</td>
+        <td>{{ receipt.from_date.strftime("%m-%d-%Y") }}</td>
+        <td>{{ receipt.to_date.strftime("%m-%d-%Y") }}</td> 
+        <td>{{ "$ %.2f"|format(receipt.basic_salary |float) }}</td>
+        <td>{{ "$ %.2f"|format(receipt.money) }}</td>
+        <td>{{ receipt.created_user.first_name + ' '+ receipt.created_user.last_name }}</td>
+        <td>{{ receipt.created_date.strftime("%m-%d-%Y") }}</td> 
+        <td>
+          {% if receipt.is_activate %}
+          <div class="circle check"></div>
+          {% else %}
+          <div class="circle uncheck"></div>
+          {% endif %}
+        </td>
+        <td>
+          <a href="#detail" onclick="getDetailReceipt(this)"
+            ><input type="text" style="display:none" value='{{ receipt.id }}' ><i class="fas fa-eye"></i
+          ></a>
+          {% if not receipt.status  %}
+            <a href="{{url_for('student.update_receipt',id=receipt.id)}}"
+              ><i class="fas fa-edit"></i
+            ></a>
+          {% endif %}
+          {% if current_user.user.role.name == 'admin' %}
+          <a
+            href="{{url_for('educate.remove_student',id_course=id_course,id=staff.id)}}"
+            ><i class="fas fa-trash-alt"></i
+          ></a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+</div> 
+{% endif %}
+       
+  {% if form %}
+     
+<div class="heading">
+  <h1>Update Info</h1>  
+</div>
+<div class="col-md-12">  
+    <form method="POST" action="" enctype="multipart/form-data" id="form-update-profile">
+    {{ form.hidden_tag() }} 
+        <div class="row">
+          <table>
+            <thead>
+              <tr>
+                <th>UPDATE PROFILE</th>
+                <th></th> 
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{ form.first_name.label() }}</td>
+                {% if form.first_name.errors %}
+                  <td>
+                    {{ form.first_name(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.first_name.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                  </td>
+                {% else %}
+                    <td>{{ form.first_name(class="form-control form-control-md") }}</td>
+                {% endif %} 
+              </tr>
+              <tr>
+                <td>{{ form.last_name.label() }}</td>
+                {% if form.last_name.errors %}
+                  <td>
+                    {{ form.last_name(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.last_name.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                  </td>
+                {% else %}
+                    <td>{{ form.last_name(class="form-control form-control-md") }}</td>
+                {% endif %} 
+              </tr>
+              <tr>
+                <td>{{ form.email.label() }}</td>
+                {% if form.email.errors %}
+                  <td>
+                    {{ form.email(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.email.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                  </td>
+                {% else %}
+                    <td>{{ form.email(class="form-control form-control-md",readonly="True") }}</td>
+                {% endif %} 
+              </tr>
+              <tr>
+                <td>{{ form.phone.label() }}</td>
+                {% if form.phone.errors %}
+                  <td>
+                    {{ form.phone(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.phone.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                  </td>
+                {% else %}
+                    <td>{{ form.phone(class="form-control form-control-md",readonly="True") }}</td>
+                {% endif %} 
+              </tr>
+              <tr>
+                <td>{{ form.address.label() }}</td>
+                {% if form.address.errors %}
+                <td>
+                  {{ form.address(class="form-control form-control-md is-invalid") }}
+                  <div class="invalid-feedback">
+                      {% for error in form.address.errors %}
+                          <span>{{ error }}</span>
+                      {% endfor %}
+                  </div>
+                </td>
+                {% else %}
+                    <td>{{ form.address(class="form-control form-control-md") }}</td>
+                {% endif %} 
+              </tr>
+              <tr>
+                <td>{{ form.birth.label() }}</td>
+                {% if form.birth.errors %}
+                <td>
+                  {{ form.birth(class="form-control form-control-md is-invalid") }}
+                  <div class="invalid-feedback">
+                      {% for error in form.birth.errors %}
+                          <span>{{ error }}</span>
+                      {% endfor %}
+                  </div>
+                </td>
+                {% else %}
+                  <td>{{ form.birth(class="datepicker form-control form-control-md") }}</td>
+                {% endif %} 
+              </tr>
+              <tr>
+                <td>{{ form.gender.label() }}</td>
+                {% if form.gender.errors %}
+                  <td>
+                  {{ form.gender(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                    {% for error in form.gender.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                    </div>
+                  </td>
+                {% else %}
+                  <td>{{ form.gender(class="form-control form-control-md") }}</td>
+                {% endif %} 
+              </tr>
+              <tr>
+                <td>{{ form.picture.label() }}</td> 
+                <td>{{ form.picture(class="form-control-file") }}</td>
+                {% if form.picture.errors %}
+                <td>
+                  {{ form.picture(class="form-control form-control-md is-invalid") }}
+                  <div class="invalid-feedback">
+                      {% for error in form.picture.errors %}
+                          <span>{{ error }}</span>
+                      {% endfor %}
+                  </div> 
+                </td>
+                {% endif %} 
+              </tr>
+
+              <tr>
+                <td></td>
+                <td class="form-group">
+                    {{ form.submit(class="btn btn-success") }}
+                </td>
+              </tr>
+              {{ form.csrf_token }}
+            </tbody>
+          </table>
+        </div> 
+      </form>
+      {% endif %} 
+</div> 
+  <script
+  src="{{ url_for('static', filename='js/profile.js') }}" 
+  crossorigin="anonymous"
+  ></script>
+{% endblock content %}

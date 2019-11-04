@@ -1,0 +1,297 @@
+{% extends "layout.html" %} {% block content %}
+
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/student.css') }}"
+/>
+
+
+<div class="col-md-12">
+  <div class="row">
+    <a href="{{url_for('student.student_info',id=receipt.student.id)}}" class="btn btn-green">Back</a>
+  </div>
+  <div class="row">
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if messages
+      %} {% for category, message in messages %}
+      <div class="error alert alert-{{ category }} mt-3 mb-0">
+        {{ message }}
+      </div>
+      {% endfor %} {% endif %} {% endwith %}
+    </div>
+</div>
+ 
+<div class="col-md-12">
+  {% if form %}
+  <form method="POST" action="" id="form-update-profile">
+    {{ form.hidden_tag() }}
+    <div class="col-md-12">
+      <div class="row">
+        <table>
+          <thead style="background-color: #3ea9c3">
+            <tr>
+              <th>UPDATE RECEIPT FOR STUDENT</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ form.first_name.label() }}</td>
+              {% if form.first_name.errors %}
+              <td>
+                {{ form.first_name(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.first_name.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {{ form.first_name(class="form-control form-control-md", readonly=True) }}
+              </td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.last_name.label() }}</td>
+              {% if form.last_name.errors %}
+              <td>
+                {{ form.last_name(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.last_name.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {{ form.last_name(class="form-control form-control-md", readonly=True) }}
+              </td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.email.label() }}</td>
+              {% if form.email.errors %}
+              <td>
+                {{ form.email(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.email.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {{ form.email(class="form-control form-control-md", readonly=True) }}
+              </td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.phone.label() }}</td>
+              {% if form.phone.errors %}
+              <td>
+                {{ form.phone(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.phone.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {{ form.phone(class="form-control form-control-md", readonly=True) }}
+              </td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.address.label() }}</td>
+              {% if form.address.errors %}
+              <td>
+                {{ form.address(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.address.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {{ form.address(class="form-control form-control-md", readonly=True) }}
+              </td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.birth.label() }}</td>
+              {% if form.birth.errors %}
+              <td>
+                {{ form.birth(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.birth.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {{ form.birth(class="form-control form-control-md",readonly=True ) }}
+              </td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.gender.label() }}</td>
+              {% if form.gender.errors %}
+              <td>
+                {{ form.gender(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.gender.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {{ form.gender(class="form-control form-control-md", readonly=True) }}
+              </td>
+              {% endif %}
+            </tr>
+
+            <tr>
+              <td>{{ form.course.label() }}</td>
+              {% if form.course.errors %}
+              <td>
+                {{ form.course(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.course.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {{ form.course(class="form-control form-control-md",readonly=True) }}
+              </td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.shift.label() }}</td>
+              {% if form.shift.errors %}
+              <td>
+                {{ form.shift(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.shift.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {{ form.shift(class="form-control form-control-md",readonly=True) }}
+              </td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.course_name.label() }}</td>
+              {% if form.course_name.errors %}
+              <td>
+                {{ form.course_name(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.course_name.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {{ form.course_name(class="form-control form-control-md",readonly=True) }}
+              </td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.course_tuition.label() }}</td>
+              {% if form.course_tuition.errors %}
+              <td>
+                {{ form.course_tuition(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.course_tuition.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {{ form.course_tuition(class="form-control form-control-md", readonly=True) }}
+              </td>
+              {% endif %}
+            </tr>
+
+            <tr>
+              <td>{{ form.reservate_tuition.label() }}</td>
+              {% if form.reservate_tuition.errors %}
+              <td>
+                {{ form.reservate_tuition(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.reservate_tuition.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {{ form.reservate_tuition(class="form-control form-control-md",readonly=True) }}
+                <div class="error alert alert-danger" style="display: none"></div>
+              </td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.next_pay.label() }}</td>
+              {% if form.next_pay.errors %}
+              <td>
+                {{ form.next_pay(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.next_pay.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %} 
+                <td>
+                  {{ form.next_pay(class="form-control form-control-md") }}
+                </td> 
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.money_return.label() }}</td>
+              {% if form.money_return.errors %}
+              <td>
+                {{ form.money_return(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.money_return.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {{ form.money_return(class="form-control form-control-md", readonly=True) }}
+              </td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td></td>
+              <td class="form-group">
+                {{ form.submit(class="btn btn-success") }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </form>
+  {% endif %}
+</div>
+
+<script
+  src="{{ url_for('static', filename='js/student_update_receipt.js') }}"
+  crossorigin="anonymous"
+></script>
+{% endblock content %}

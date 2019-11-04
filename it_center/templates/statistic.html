@@ -1,0 +1,366 @@
+{% extends "layout.html" %} {% block content %}
+
+<script
+  src="{{ url_for('static', filename='js/Chart.min.js') }}"
+  crossorigin="anonymous"
+></script>
+<!-- <div class="col-md-12">
+  <div class="row">
+    <a href="#" class="btn btn-green">+ New Product</a>
+  </div>
+</div> --> 
+<div class="col-md-12">
+  <div class="row">
+    <div class="heading">
+      <h1>Activities in center <i class="fas fa-star"></i> </h1>
+    </div>
+  </div>
+  <div class="row">
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>NO. TOTAL STUDENT</th>
+          <th>NO. STUDENT IN CLASS</th>
+          <th>NO. TOTAL CLASS</th>
+          <th>NO. OPENING CLASS</th>
+          <th>EXPENDITURE THIS MONTH</th>
+          <th>REVENUE THIS MONTH</th>
+          <th>TOTAL EXPENDITURE</th>
+          <th>TOTAL REVENUE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td></td>
+          <td>{{ student_in_system|length }}</td>
+          <td>{{ student_in_class|length }}</td>
+          <td>{{ class_in_system|length }}</td>
+          <td>{{ class_in_active|length }} <i class="fas fa-info fas-info" data-toggle="tooltip" data-placement="bottom" title="Click to get more info about opening class"></i></td> 
+          <td>{{ now_payment_values }}</td>
+          <td>{{ now_tuition_values }}</td>
+          <td>{{ "$ %.2f"|format(payment_values|sum) }}</td>
+          <td>{{ "$ %.2f"|format(tuition_values|sum) }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div> 
+<div class="col-md-12" id="class_in_active" >
+  <div class="row">
+    <div class="heading">
+      <h1>Opening Class</h1>
+    </div>
+  </div>
+  <div class="row">
+    <table>
+      <thead>
+        <tr>
+          <th>CODE</th>
+          <th>NAME</th>
+          <th>START DATE</th>
+          <th>FINISH DATE</th>
+          <th>SHIFT</th>
+          <th>TEACHER</th>
+          <th>TUITION</th> 
+        </tr>
+      </thead>
+      <tbody>
+          {% for course in class_in_active %}
+          <tr> 
+            <td><a href="{{url_for('educate.educate_info',id=course.id)}}">{{ course.id_course }}</a></td>
+            <td>
+              {% if  (course.start_date > now  ) %}
+                <span><i class="fas fa-bullhorn"></i>({{ course.start_date.day - now.day}} left)</span>
+              {% elif (course.start_date.month == now.month and course.start_date.year == now.year and course.start_date.day == now.day )%}
+                
+                <i class="fas fa-bullhorn"></i>
+                
+              {% elif now > course.finish_date and now.day > course.finish_date.day %}
+                <i class="fas fa-times-circle"></i>
+              {% else %}
+                <i class="fas fa-calendar-alt"></i>
+              {% endif %}  
+              {{ course.name }} 
+            </td>
+            <td>{{ course.start_date.strftime("%m-%d-%Y") }}</td>
+            <td>{{ course.finish_date.strftime("%m-%d-%Y") }}</td>
+            <td>{{ course.shift.name }}</td>
+            <td>{{ course.teacher.first_name }}</td> 
+            <td>{{ course.tuition }}</td> 
+          </tr>
+        {% endfor %} 
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="col-md-12">
+    <div class="row">
+      <div class="heading">
+        <h1>Revenue and Expenditure <i class="fas fa-chart-line"></i> </h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <canvas id="bar_chart" width="600px" height="400px"></canvas>
+      </div>
+      <div class="col-md-6">
+        <canvas id="line_chart" width="600px" height="400px"></canvas>
+      </div>
+      <div class="col-md-6">
+        <canvas id="pie_chart_1" width="600px" height="400px"></canvas>
+      </div> 
+      <div class="col-md-6">
+          <canvas id="pie_chart_2" width="600px" height="400px"></canvas>
+        </div> 
+  </div>
+</div> 
+<script>
+  // Global parameters:
+  // do not resize the chart canvas when its container does (keep at 600x400px)
+  Chart.defaults.global.responsive = false;
+
+  // define the chart data
+ 
+  var line_data = {
+    labels : [{% for item in labels %}
+               "{{item}}",
+              {% endfor %}],
+    datasets : [{
+        label: 'Monthly Tuition Data',
+        fill: true,
+        lineTension: 0.1,
+        // backgroundColor: "#d6ffeb",
+        borderColor: "#5effb1",
+        borderCapStyle: 'butt',
+        borderDash: [],
+        borderDashOffset: 0.0,
+        borderJoinStyle: 'miter',
+        pointBorderColor: "rgba(75,192,192,1)",
+        pointBackgroundColor: "#fff",
+        pointBorderWidth: 1,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: "rgba(75,192,192,1)",
+        pointHoverBorderColor: "rgba(220,220,220,1)",
+        pointHoverBorderWidth: 2,
+        pointRadius: 1,
+        pointHitRadius: 10,
+        data : [{% for item in tuition_values %}
+                  {{item}},
+                {% endfor %}],
+        spanGaps: false
+    },{
+        label: 'Monthly Payment Data',
+        fill: true,
+        lineTension: 0.1,
+        // backgroundColor: "#7ac8ff",
+        borderColor: "#7ac8ff",
+        borderCapStyle: 'butt',
+        borderDash: [],
+        borderDashOffset: 0.0,
+        borderJoinStyle: 'miter',
+        pointBorderColor: "rgba(75,192,192,1)",
+        pointBackgroundColor: "#fff",
+        pointBorderWidth: 1,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: "rgba(75,192,192,1)",
+        pointHoverBorderColor: "rgba(220,220,220,1)",
+        pointHoverBorderWidth: 2,
+        pointRadius: 1,
+        pointHitRadius: 10,
+        data : [{% for item in payment_values %}
+                  {{item}},
+                {% endfor %}],
+        spanGaps: false
+    }]
+  }
+
+  var bar_data = {
+    labels : [{% for item in labels %}
+               "{{item}}",
+              {% endfor %}],
+    datasets : [{
+        label: 'Monthly Tuition Data',
+        fill: true,
+        lineTension: 0.1,
+        backgroundColor: "#5effb1",
+        borderColor: "#ffc954",
+        borderCapStyle: 'butt',
+        borderDash: [],
+        borderDashOffset: 0.0,
+        borderJoinStyle: 'miter',
+        pointBorderColor: "rgba(75,192,192,1)",
+        pointBackgroundColor: "#fff",
+        pointBorderWidth: 1,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: "rgba(75,192,192,1)",
+        pointHoverBorderColor: "rgba(220,220,220,1)",
+        pointHoverBorderWidth: 2,
+        pointRadius: 1,
+        pointHitRadius: 10,
+        data : [{% for item in tuition_values %}
+                  {{item}},
+                {% endfor %}],
+        spanGaps: false
+    },{
+        label: 'Monthly Payment Data',
+        fill: true,
+        lineTension: 0.1,
+        backgroundColor: "#7ac8ff",
+        borderColor: "rgba(75,192,192,1)",
+        borderCapStyle: 'butt',
+        borderDash: [],
+        borderDashOffset: 0.0,
+        borderJoinStyle: 'miter',
+        pointBorderColor: "rgba(75,192,192,1)",
+        pointBackgroundColor: "#fff",
+        pointBorderWidth: 1,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: "rgba(75,192,192,1)",
+        pointHoverBorderColor: "rgba(220,220,220,1)",
+        pointHoverBorderWidth: 2,
+        pointRadius: 1,
+        pointHitRadius: 10,
+        data : [{% for item in payment_values %}
+                  {{item}},
+                {% endfor %}],
+        spanGaps: false
+    }]
+  }
+
+  var pie_data_1 = {
+    labels : [{% for item in labels %}
+               "{{item}}",
+              {% endfor %}],
+    datasets : [{
+        label: 'Monthly Tuition Data',
+        fill: true,
+        lineTension: 0.1,
+        backgroundColor: [{% for item in colors %}
+                            "{{item}}",
+                            {% endfor %}],
+        borderColor: "#ffc954",
+        borderCapStyle: 'butt',
+        borderDash: [],
+        borderDashOffset: 0.0,
+        borderJoinStyle: 'miter',
+        pointBorderColor: "rgba(75,192,192,1)",
+        pointBackgroundColor: "#fff",
+        pointBorderWidth: 1,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: "rgba(75,192,192,1)",
+        pointHoverBorderColor: "rgba(220,220,220,1)",
+        pointHoverBorderWidth: 2,
+        pointRadius: 1,
+        pointHitRadius: 10,
+        data : [{% for item in tuition_values %}
+                  {{item}},
+                {% endfor %}],
+        spanGaps: false
+    }]
+  }
+
+  var pie_data_2 = {
+    labels : [{% for item in labels %}
+               "{{item}}",
+              {% endfor %}],
+    datasets : [{
+        label: 'Monthly Payment Data',
+        fill: true,
+        lineTension: 0.1,
+        backgroundColor: [{% for item in colors %}
+                            "{{item}}",
+                            {% endfor %}],
+        borderColor: "#ffc954",
+        borderCapStyle: 'butt',
+        borderDash: [],
+        borderDashOffset: 0.0,
+        borderJoinStyle: 'miter',
+        pointBorderColor: "rgba(75,192,192,1)",
+        pointBackgroundColor: "#fff",
+        pointBorderWidth: 1,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: "rgba(75,192,192,1)",
+        pointHoverBorderColor: "rgba(220,220,220,1)",
+        pointHoverBorderWidth: 2,
+        pointRadius: 1,
+        pointHitRadius: 10,
+        data : [{% for item in payment_values %}
+                  {{item}},
+                {% endfor %}],
+        spanGaps: false
+    }]
+  }
+ 
+
+  // get chart canvas
+  var bar_ctx = document.getElementById("bar_chart").getContext("2d");
+  var line_ctx = document.getElementById("line_chart").getContext("2d");
+  var pie_ctx_1 = document.getElementById("pie_chart_1").getContext("2d");
+  var pie_ctx_2 = document.getElementById("pie_chart_2").getContext("2d");
+
+  // create the chart using the chart canvas
+  var line_char = new Chart(line_ctx, {
+    type: 'line',
+    data: line_data,
+    options: {
+      title: {
+        display: true,
+        text: 'Line Chart ',
+        position:'bottom',
+        fontColor: '#1f8fff',
+        fontSize: 25,
+        fontStyle: 'bold' 
+      }
+    }
+  });
+
+  var bar_char = new Chart(bar_ctx, {
+    type: 'bar',
+    data: bar_data, 
+    options: {
+      title: {
+        display: true,
+        text: 'Bar Chart ',
+        position:'bottom',
+        fontColor: '#1f8fff',
+        fontSize: 25,
+        fontStyle: 'bold' 
+      }
+    }
+  });
+
+  var pie_1 = new Chart(pie_ctx_1, {
+    type: 'pie',
+    data: pie_data_1,
+    options: {
+      title: {
+        display: true,
+        text: 'Pie Chart ',
+        position:'bottom',
+        fontColor: '#1f8fff',
+        fontSize: 25,
+        fontStyle: 'bold' 
+      }
+    }
+  });
+  var pie_2 = new Chart(pie_ctx_2, {
+    type: 'pie',
+    data: pie_data_2,
+    options: {
+      title: {
+        display: true,
+        text: 'Pie Chart ',
+        position:'bottom',
+        fontColor: '#1f8fff',
+        fontSize: 25,
+        fontStyle: 'bold' 
+      }
+    }
+  });
+</script>
+ <script
+ src="{{ url_for('static', filename='js/statistic.js') }}"
+ crossorigin="anonymous"
+></script>
+{% endblock content %}

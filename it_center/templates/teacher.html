@@ -1,0 +1,90 @@
+{% extends "layout.html" %} {% block content %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/teacher.css') }}"
+/>
+{% with messages = get_flashed_messages(with_categories=true) %} {% if messages
+  %} {% for category, message in messages %}
+  <div class="alert alert-{{ category }} ml-3">
+    {{ message }}
+  </div>
+  {% endfor %} {% endif %} {% endwith %}
+  
+      <div class="col-md-12">
+        <div class="row">
+          <a href="{{url_for('teacher.create')}}" class="btn btn-green">+ New Teacher</a>
+          {% if current_user.user.role.name == "admin" %}
+            <a href="{{url_for('teacher.teacher_removed',page=1)}}" class="btn btn-yellow ml-2">List Removed Teacher</a>
+          {% endif %}  
+         
+        </div> 
+        <div class="paginate-teacher">
+          {% if page_num != 1 and page_num != -1%}
+            <a class="btn mb-4"  href="{{ url_for('teacher.index',page=1) }}">Start </a><span> ... </span> 
+            <a class="btn mb-4" href="{{ url_for('teacher.index',page=page_num-1) }}" >{{ page_num-1 }}</a>
+          {% endif%} 
+            <a class="btn mb-4 btn-green"  href="{{ url_for('teacher.index',page=page_num) }}">{{ page_num }}</a> 
+          {% if page_num != -1 %}
+            <a class="btn mb-4"  href="{{ url_for('teacher.index',page=page_num+1) }}"> {{ page_num+1 }} </a><span> ... </span>  
+            <a class="btn mb-4"  href="{{ url_for('teacher.index',page=-1) }}"> End</a> 
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="row"> 
+          <div class="search-area"> 
+            <input type="text" name="" placeholder="Search" id="search-teacher" />
+            <i class="fas fa-search"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 mb-5">
+       
+        <div class="row">
+          <table>
+            <thead>
+              <tr>
+                <th>NAME</th>
+                <th>PHONE</th>
+                <th>EMAIL</th>
+                <th>ADDRESS</th>
+                <th>BIRTH</th>
+                <th>GENDER</th>
+                <th>AVATAR</th>
+                <!-- <th>STATUS</th> -->
+                <th>OPTION</th>
+              </tr>
+            </thead>
+            <tbody id="body-table-teacher">
+              {% for teacher in teachers %}
+                <tr> 
+                  <td><a href="{{url_for('teacher.teacher_info',id=teacher.id)}}">{{ teacher.first_name+' '+ teacher.last_name }}</a></td>
+                  <td>{{ teacher.phone }}</td>
+                  <td>{{ teacher.email }}</td>
+                  <td>{{ teacher.address }}</td>
+                  <td>{{ teacher.birth }}</td>
+                  <td>{{ teacher.gender }}</td>
+                  <td><img  alt="avatar" src="{{url_for('static',filename='profile_pics/'+teacher.image_file)}}" class="teacher-img"></td>
+                  <!-- <td>
+                    {% if teacher.is_activate %}
+                      <div class="circle check"></div>
+                    {% else %}
+                      <div class="circle uncheck"></div>
+                    {% endif %}
+                  </td> -->
+                  <td>
+                      <a href="{{url_for('teacher.teacher_info',id=teacher.id)}}"><i class="fas fa-edit"></i></a>
+                  </td>
+                </tr>
+              {% endfor %} 
+            </tbody>
+          </table>
+        </div>
+      </div> 
+<script
+  src="{{ url_for('static', filename='js/teacher.js') }}"
+  crossorigin="anonymous"
+></script>
+{% endblock content %}

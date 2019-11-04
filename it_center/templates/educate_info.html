@@ -1,0 +1,284 @@
+{% extends "layout.html" %} {% block content %}
+
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/student.css') }}"
+/>
+{% with messages = get_flashed_messages(with_categories=true) %} {% if messages
+%} {% for category, message in messages %}
+<div class="alert alert-{{ category }} ml-3">
+  {{ message }}
+</div>
+{% endfor %} {% endif %} {% endwith %}
+<div class="col-md-12">
+  <div class="row">
+    <a href="{{url_for('educate.index',page=1)}}" class="btn btn-green">Back</a>
+    <a href="{{url_for('student.index',page=1)}}" class="btn btn-yellow ml-3">Add student</a>
+  </div>
+</div>
+{% if form %}
+<div class="col-md-12">
+  <form method="POST" action="" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <div class="col-md-12">
+      <div class="row">
+        <table>
+          <thead>
+            <tr>
+              <th>UPDATE COURSE</th>
+              <th></th> 
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ form.id_course.label() }}</td>
+              {% if form.id_course.errors %}
+              <td>
+                {{ form.id_course(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.id_course.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {{ form.id_course(class="form-control form-control-md",readonly=True) }}
+              </td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.name.label() }}</td>
+              {% if form.name.errors %}
+              <td>
+                {{ form.name(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.name.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {% if current_user.user.role.name == "admin" or current_user.user.role.name == "academic" %}
+                  {{ form.name(class="form-control form-control-md") }}
+                {% else %}
+                  {{ form.name(class="form-control form-control-md", readonly=True) }}
+                {% endif %}  
+              </td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.start_date.label() }}</td>
+              {% if form.start_date.errors %}
+              <td>
+                {{ form.start_date(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.start_date.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {% if current_user.user.role.name == "admin" or current_user.user.role.name == "academic" %}
+                  {{ form.start_date(class="form-control form-control-md") }}
+                {% else %}
+                  {{ form.start_date(class="form-control form-control-md", readonly=True) }}  
+                {% endif %} 
+              </td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.finish_date.label() }}</td>
+              {% if form.finish_date.errors %}
+              <td>
+                {{ form.finish_date(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.finish_date.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {% if current_user.user.role.name == "admin" or current_user.user.role.name == "academic" %}
+                  {{ form.finish_date(class="form-control form-control-md") }}
+                {% else %}
+                  {{ form.finish_date(class="form-control form-control-md", readonly=True) }}  
+                {% endif %} 
+              </td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.shift.label() }}</td>
+              {% if form.shift.errors %}
+              <td>
+                {{ form.shift(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.shift.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %} 
+                <td>
+                  {% if current_user.user.role.name == "admin" or current_user.user.role.name == "academic" %}
+                    {{ form.shift(class="form-control form-control-md") }}
+                  {% else %}
+                    {{ form.shift(class="form-control form-control-md", readonly=True) }}
+                  {% endif %}  
+                </td>
+              {% endif %}
+            </tr>
+            <tr></tr>
+            <tr>
+              <td>{{ form.teacher.label() }}</td>
+              {% if form.teacher.errors %}
+              <td>
+                {{ form.teacher(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.teacher.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+                <td>
+                  {% if current_user.user.role.name == "admin" or current_user.user.role.name == "academic" %}
+                    {{ form.teacher(class="form-control form-control-md") }}
+                  {% else %}
+                    {{ form.teacher(class="form-control form-control-md", readonly=True) }}
+                  {% endif %}  
+                </td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.tuition.label() }}</td>
+              {% if form.tuition.errors %}
+              <td>
+                {{ form.tuition(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.tuition.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {% if current_user.user.role.name == "admin" or current_user.user.role.name == "academic" %}
+                  {{ form.tuition(class="form-control form-control-md") }}
+                {% else %}
+                  {{ form.tuition(class="form-control form-control-md", readonly=True) }}
+                {% endif %}  
+              </td>
+             
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.status.label() }}</td>
+              {% if form.status.errors %}
+              <td>
+                {{ form.status(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.status.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {% if current_user.user.role.name == "admin" or current_user.user.role.name == "academic" %}
+                  {{ form.status(class="form-control form-control-md") }}
+                {% else %}
+                  {{ form.status(class="form-control form-control-md", readonly=True) }}
+                {% endif %}  
+              </td>
+              {% endif %}
+            </tr>
+
+            <tr>
+              <td></td>
+              <td class="form-group">
+                {% if current_user.user.role.name == "admin" or current_user.user.role.name == "academic" %}
+                  {{ form.submit(class="btn btn-success") }} 
+                {% endif %}  
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div> 
+  </form>
+</div>
+
+<div class="col-md-12 mb-5">
+  <div class="row">
+    <table>
+      <thead>
+        <tr>
+          <th>NAME</th>
+          <th>PHONE</th>
+          <th>EMAIL</th>
+          <th>ADDRESS</th>
+          <th>BIRTH</th>
+          <th>GENDER</th>
+          <th>AVATAR</th>
+          <th>PAID</th>
+          <th>STATUS</th>
+          <th>OPTION</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for student in students %}
+        <tr>
+          <td><a href="{{url_for('student.student_info',id=student.id)}}">{{ student.first_name + " " + student.last_name }}</a></td>
+          <td>{{ student.phone }}</td>
+          <td>{{ student.email }}</td>
+          <td>{{ student.address }}</td>
+          <td>{{ student.birth }}</td>
+          <td>{{ student.gender }}</td>
+          <td>
+            <img
+              alt="avatar"
+              src="{{ student.image_file }}"
+              class="student-img"
+            />
+          </td>
+          <td>
+              {% for receipt in receipts %}
+                {% if receipt.student.id == student.id %} 
+                    {% if receipt.status %}
+                        <div class="circle check" ></div>
+                    {% else %}
+                        <div class="circle uncheck"></div>
+                    {% endif %}
+                {% endif %}
+              {% endfor %}
+          </td>
+          <td>
+            {% if student.status %}
+            <div class="circle check"></div>
+            {% else %}
+            <div class="circle uncheck"></div>
+            {% endif %}
+          </td>
+          <td>
+            <a href="{{url_for('student.student_info',id=student.id)}}"
+              ><i class="fas fa-edit"></i
+            ></a>
+            {% if current_user.user.role.name == 'admin' %}
+            <a
+              href="{{url_for('educate.remove_student',id_course=id_course,id=student.id)}}"
+              ><i class="fas fa-trash-alt"></i
+            ></a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endif %} {% endblock content %}

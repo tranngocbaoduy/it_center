@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Bootstrap CSS -->
+   
+    <link rel="shortcut icon" href="{{ url_for('static', filename='icon/favicon.ico') }}">
+      <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />  
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script
+      src="https://kit.fontawesome.com/93b83c1271.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='css/main.css') }}"
+    />
+
+    {% if title %}
+    <title>IT Center - {{ title }}</title>
+    {% else %}
+    <title>IT Center</title>
+    {% endif %}
+  </head>
+
+  <body>
+    <section id="sideMenu">
+      <nav>
+        {% if activate %}
+        <a href="{{ url_for('main.index') }}" class="{{ activate[0] }}"
+          ><i class="fas fa-tachometer-alt"></i>Dashboard</a
+        >
+        <a href="{{ url_for('student.index',page=1) }}" class="{{ activate[1] }}"
+          ><i class="fas fa-user-tie"></i>Student</a
+        >
+        <a href="{{ url_for('teacher.index',page=1) }}" class="{{ activate[2] }}"
+          ><i class="fas fa-address-book"></i>Teacher</a
+        >
+        <a href="{{ url_for('educate.index',page=1) }}" class="{{ activate[3] }}"
+          ><i class="fas fa-list"></i>Educate</a
+        >
+        
+        {% if current_user.user.role.name == 'admin' %}
+        <a href="{{ url_for('staff.index',page=1) }}" class="{{ activate[4] }}"
+          ><i class="fas fa-users"></i>Staff</a
+        > 
+        {% endif %}
+        <a href="{{ url_for('main.statistic') }}" class="{{ activate[6] }}"
+          ><i class="fas fa-chart-line"></i>Statistic</a
+        >
+        <a href="{{ url_for('users.profile') }}" class="{{ activate[7] }}"
+          ><i class="fas fa-clipboard-list"></i>Profile</a
+        >
+        <!-- <a href="{{ url_for('main.setting') }}" class="{{ activate[7] }}"
+          ><i class="fas fa-shopping-cart"></i>Setting</a
+        > -->
+        <a href="{{ url_for('users.logout') }}"><i class="fas fa-sign-out-alt"></i>Sign Out</a>
+        {% endif %}
+      </nav>
+    </section>
+
+    <header>
+      <div class="search-area">
+        <!-- <i class="fas fa-search"></i> -->
+        <!-- <input type="text" name="" id="" /> -->
+      </div>
+      <div class="user-area">
+        <!-- <a href="#" class="add">+ Add</a> -->
+        <a href="#" class="add">Hello {{current_user.user.first_name}}</a>
+        <!-- <a href="#" class="notification">
+          <i class="far fa-bell"></i>
+          <span class="circle">3</span>
+        </a>  -->
+        <div class="btn-group">
+          <button type="button" class="btn btn-ouline-black dropdown-toggle" style="color:black" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+          <div class="dropdown-menu dropdown-menu-right">
+              <a class="dropdown-item" href="{{ url_for('users.profile') }}">Profile</a>
+            
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{{ url_for('users.logout') }}">Log Out</a> 
+          </div>
+      </div>
+      </div>
+    </header>
+
+    <section id="content-area">
+      {% block content %}{% endblock %}
+    </section>
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <!-- <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script> -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+  </body> 
+  <script
+  src="{{ url_for('static', filename='js/main.js') }}"
+  crossorigin="anonymous"
+  ></script>
+</html>

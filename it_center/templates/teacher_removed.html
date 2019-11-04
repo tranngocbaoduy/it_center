@@ -1,0 +1,88 @@
+{% extends "layout.html" %} {% block content %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/teacher.css') }}"
+/>
+{% with messages = get_flashed_messages(with_categories=true) %} {% if messages
+  %} {% for category, message in messages %}
+  <div class="alert alert-{{ category }}">
+    {{ message }}
+  </div>
+  {% endfor %} {% endif %} {% endwith %}
+     
+      <div class="col-md-12"> 
+          <div class="row">
+            <a href="{{url_for('teacher.index',page=1)}}" class="btn btn-green">Back Manage Teacher</a>
+          </div>
+         <div class="row paginate-teacher">
+          {% if page_num != 1 and page_num != -1%}
+            <a class="btn mb-4"  href="{{ url_for('teacher.index',page=1) }}">Start </a><span> ... </span> 
+            <a class="btn mb-4" href="{{ url_for('teacher.index',page=page_num-1) }}" >{{ page_num-1 }}</a>
+          {% endif%} 
+            <a class="btn mb-4 btn-green"  href="{{ url_for('teacher.index',page=page_num) }}">{{ page_num }}</a> 
+          {% if page_num != -1 %}
+            <a class="btn mb-4"  href="{{ url_for('teacher.index',page=page_num+1) }}"> {{ page_num+1 }} </a><span> ... </span>  
+            <a class="btn mb-4"  href="{{ url_for('teacher.index',page=-1) }}"> End</a> 
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="row"> 
+          <div class="search-area"> 
+            <input type="text" name="" placeholder="Search" id="search-removed-teacher" />
+            <i class="fas fa-search"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+       
+        <div class="row">
+          <table>
+            <thead>
+              <tr>
+                <th>NAME</th>
+                <th>PHONE</th>
+                <th>EMAIL</th>
+                <th>ADDRESS</th>
+                <th>BIRTH</th>
+                <th>GENDER</th>
+                <th>AVATAR</th> 
+                <th>IS ACTIVATE</th> 
+                <th>RESTORE</th>
+              </tr>
+            </thead>
+            <tbody id="body-table-teacher">
+              {% for teacher in teachers %}
+                <tr> 
+                  <td>{{ teacher.first_name+' '+ teacher.last_name }}</td>
+                  <td>{{ teacher.phone }}</td>
+                  <td>{{ teacher.email }}</td>
+                  <td>{{ teacher.address }}</td>
+                  <td>{{ teacher.birth }}</td>
+                  <td>{{ teacher.gender }}</td>
+                  <td>
+                    {% if teacher.is_activate %}
+                      <div class="circle check"></div>
+                    {% else %}
+                      <div class="circle uncheck"></div>
+                    {% endif %}
+                  </td>
+                  <td><img  alt="avatar" src="{{url_for('static',filename='profile_pics/'+teacher.image_file)}}" class="teacher-img"></td> 
+                  <td>
+                      <a href="{{url_for('teacher.restore',id=teacher.id)}}"
+                      data-toggle="tooltip" data-placement="bottom" title="Restore this teacher"
+                      ><i class="fas fa-edit"></i></a>
+                  </td>
+                </tr>
+              {% endfor %} 
+            </tbody>
+          </table>
+        </div>
+      </div> 
+<script
+  src="{{ url_for('static', filename='js/teacher.js') }}"
+  crossorigin="anonymous"
+></script>
+{% endblock content %}

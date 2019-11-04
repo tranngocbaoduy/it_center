@@ -1,0 +1,148 @@
+{% extends "layout.html" %} {% block content %}
+
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/main.css') }}"
+/>
+<div> 
+{% with messages = get_flashed_messages(with_categories=true) %} 
+  {% if messages %} 
+    {% for category, message in messages %} 
+        <div class="alert alert-{{ category }}" style="background-color:rgb(132, 255, 132)">
+        {{ message }}
+        </div>
+    {% endfor %} 
+  {% endif %}
+{% endwith %} 
+</div> 
+<div class="col-md-12">
+  <div class="row">
+    <div class="heading">
+      <h1>Opening Course</h1>
+  </div>
+</div>
+<div class="col-md-12">
+  <div class="row">
+    <table>
+      <thead>
+        <tr>
+          <th>CODE</th>
+          <th>NAME</th>
+          <th>START DATE</th>
+          <th>FINISH DATE</th>
+          <th>SHIFT</th>
+          <th>TEACHER</th>
+          <th>TUITION</th>
+          <th>STATUS</th>  
+          <th>OPTION</th>  
+        </tr>
+      </thead>
+      <tbody>
+          {% for course in courses %}
+          <tr> 
+            <td> <span class="logo">{{ course.id_course }}</span></td>
+            <td>
+              <a href="{{url_for('educate.educate_info',id=course.id)}}">{{ course.name }}</a>
+                {% if (course.start_date.month == now.month) and (course.start_date.year == now.year) and (course.start_date.day == now.day)  %}
+                <i class="fas fa-bullhorn"></i>
+              {% endif %} 
+
+              {% if (course.start_date.month >= now.month) and (course.start_date.year >= now.year) and (course.start_date.day > now.day)  %}
+                <span style="color:red">({{ course.start_date.day - now.day}} left)</span>
+              {% endif %} 
+            </td>
+            <td>{{ course.start_date.strftime("%m-%d-%Y") }}  
+             
+            </td>
+            <td>{{ course.finish_date.strftime("%m-%d-%Y") }}</td>
+            <td>{{ course.shift.name }}</td>
+            <td>{{ course.teacher.first_name }}</td> 
+            <td>{{ course.tuition }}</td>
+           
+            <td>
+              {% set num_student = 5 - course.list_student|length %}
+              {% if course.status %}
+                <div class="circle check" data-toggle="tooltip" data-placement="bottom" title="{{'This class has '+ course.list_student|length|string + ' students.' }}"></div>
+                <br><div style="text-align:center;color:green">{{course.list_student|length|string + '/15'  }}</div>
+                {% else %}
+                <div class="circle uncheck" data-toggle="tooltip" data-placement="bottom" title="{{'This class has '+ course.list_student|length|string + '. There are more' }}  {{num_student}} {{ 'student to open this class' }}'"></div>
+                <br><div style="text-align:center;color:green">{{course.list_student|length|string + '/5'  }}</div>
+              {% endif %}
+            </td> 
+            <td>
+              <a href="{{url_for('student.index',page=1)}}" data-toggle="tooltip" data-placement="bottom" title="Add student now"><i class="fas fa-plus"></i></a>
+            </td>
+        {% endfor %} 
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+<!-- 
+<div class="col-md-12">
+  <div class="row">
+    <div class="heading">
+      <h1>Employee</h1> 
+  </div>
+</div>
+<div class="col-md-12">
+  <div class="row">
+    <table>
+      <thead>
+        <tr>
+          <th>COMPANY</th>
+          <th>Administrator</th>
+          <th>END OF APPLICATION</th>
+          <th>LOCATION</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="logo">OP</span> Online Shopping</td>
+          <td>Java Developer</td>
+          <td>11:30 AM</td>
+          <td>Ho Chi Minh, HCMC</td>
+        </tr>
+        <tr>
+          <td><span class="logo">LK</span> Online Shopping</td>
+          <td>Java Developer</td>
+          <td>11:30 AM</td>
+          <td>Ho Chi Minh, HCMC</td>
+        </tr>
+        <tr>
+          <td><span class="logo">WF</span> Online Shopping</td>
+          <td>Java Developer</td>
+          <td>11:30 AM</td>
+          <td>Ho Chi Minh, HCMC</td>
+        </tr>
+        <tr>
+          <td><span class="logo">JK</span> Online Shopping</td>
+          <td>Java Developer</td>
+          <td>11:30 AM</td>
+          <td>Ho Chi Minh, HCMC</td>
+        </tr>
+        <tr>
+          <td><span class="logo">JK</span> Online Shopping</td>
+          <td>Java Developer</td>
+          <td>11:30 AM</td>
+          <td>Ho Chi Minh, HCMC</td>
+        </tr>
+        <tr>
+          <td><span class="logo">JK</span> Online Shopping</td>
+          <td>Java Developer</td>
+          <td>11:30 AM</td>
+          <td>Ho Chi Minh, HCMC</td>
+        </tr>
+        <tr>
+          <td><span class="logo">JK</span> Online Shopping</td>
+          <td>Java Developer</td>
+          <td>11:30 AM</td>
+          <td>Ho Chi Minh, HCMC</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div> -->
+{% endblock content %}

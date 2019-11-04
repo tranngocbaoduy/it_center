@@ -1,0 +1,44 @@
+.staff-img{
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 10px;
+} 
+.paginate-staff{ 
+    position: absolute;
+    right:0;
+    margin:auto;
+    top:25px;
+}
+.paginate-staff a{ 
+    color: #cccccc;
+    border: solid 1px rgb(200, 200, 200) ;
+}
+.paginate-staff a:hover{
+   background-color: #2ecc71;
+   color:white;
+}
+
+.paginate-staff .btn-green{ 
+    color:white;  
+}
+ 
+
+.remove-staff{
+    position: absolute;
+    right:0;
+    margin:auto;
+    top:25px;
+    opacity: 0.5;
+    color:white;
+}
+
+.remove-staff:hover{ 
+    opacity: 1;
+    color:white;
+}
+

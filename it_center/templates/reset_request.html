@@ -1,0 +1,53 @@
+
+<link
+rel="stylesheet"
+href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+crossorigin="anonymous"
+/>
+<link rel="shortcut icon" href="{{ url_for('static', filename='icon/favicon.ico') }}">
+<link
+rel="stylesheet"
+type="text/css"
+href="{{ url_for('static', filename='css/reset_password.css') }}"
+/>
+<div class='landing'> 
+<div class="reset-password-form dark-overlay">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Reset Password</legend>
+            <div class="form-group">
+                {{ form.email.label(class="form-control-label") }}
+                {% if form.email.errors %}
+                    {{ form.email(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.email.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.email(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group ">
+            {{ form.submit(class="btn btn-reset") }}
+        </div>
+        <div class="form-group ">
+            <a class="btn btn-back" href="{{url_for('main.index',page=1)}}">Back to login</a>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %} 
+        {% if messages %} 
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+            {{ message }}
+            </div>
+        {% endfor %} 
+        {% endif %}
+        {% endwith %}
+    </form> 
+  
+</div> 
+</div>

@@ -1,0 +1,293 @@
+{% extends "layout.html" %} {% block content %}
+
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/student.css') }}"
+/>
+{% with messages = get_flashed_messages(with_categories=true) %} {% if messages
+%} {% for category, message in messages %}
+<div class="alert alert-{{ category }}">
+  {{ message }}
+</div>
+{% endfor %} {% endif %} {% endwith %}
+
+<div class="col-md-12">
+  <div class="row">
+    <a href="{{url_for('staff.index',page=1)}}" class="btn btn-green"
+      >Back manage staff</a
+    > 
+    <a href="{{url_for('staff.create_receipt',id=staff.id)}}" class="btn btn-yellow ml-3"
+      >Create Payment Receipt</a
+    > 
+    {% if is_activate == False %}
+    <a href="{{url_for('staff.send_active_again',id=staff.id)}}" class="btn btn-blue ml-3"
+      >Send email active</a
+    > 
+    {% endif %}
+        <!-- {% if current_user.user.role.name == 'admin' %}
+                      <a href="#"><i class="fas fa-trash-alt"></i></a>
+                      {% endif %} -->
+    {% if current_user.user.role.name == 'admin' %}
+      <a
+        href="{{url_for('staff.remove',id=staff.id)}}"
+        class="btn btn-red ml-3 remove-student" 
+        data-toggle="tooltip" data-placement="bottom" 
+        title="Delete is danger. You should sure before delete this"
+        >Remove Staff</a
+      >
+    {% endif %}
+
+  </div>
+</div>
+{% if form %}
+<div class="col-md-12">
+  <form
+    method="POST"
+    action=""
+    enctype="multipart/form-data"
+    style="display:block"
+    id="form-update-profile"
+  >
+    {{ form.hidden_tag() }}
+      <div class="row">
+        <table>
+          <thead>
+            <tr>
+              <th>UPDATE PROFILE</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ form.first_name.label() }}</td>
+              {% if form.first_name.errors %}
+              <td>
+                {{ form.first_name(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.first_name.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {{ form.first_name(class="form-control form-control-md") }}
+              </td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.last_name.label() }}</td>
+              {% if form.last_name.errors %}
+              <td>
+                {{ form.last_name(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.last_name.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {{ form.last_name(class="form-control form-control-md") }}
+              </td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.email.label() }}</td>
+              {% if form.email.errors %}
+              <td>
+                {{ form.email(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.email.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>{{ form.email(class="form-control form-control-md") }}</td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.phone.label() }}</td>
+              {% if form.phone.errors %}
+              <td>
+                {{ form.phone(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.phone.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>{{ form.phone(class="form-control form-control-md") }}</td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.address.label() }}</td>
+              {% if form.address.errors %}
+              <td>
+                {{ form.address(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.address.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {{ form.address(class="form-control form-control-md") }}
+              </td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.birth.label() }}</td>
+              {% if form.birth.errors %}
+              <td>
+                {{ form.birth(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.birth.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>
+                {{ form.birth(class="datepicker form-control form-control-md") }}
+              </td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.gender.label() }}</td>
+              {% if form.gender.errors %}
+              <td>
+                {{ form.gender(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.gender.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>{{ form.gender(class="form-control form-control-md") }}</td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.salary.label() }}</td>
+              {% if form.salary.errors %}
+              <td>
+                {{ form.salary(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.salary.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>{{ form.salary(class="form-control form-control-md") }}</td>
+              {% endif %}
+            </tr>
+            
+            <tr>
+              <td>{{ form.role.label() }}</td>
+              {% if form.role.errors %}
+              <td>
+                {{ form.role(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.role.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% else %}
+              <td>{{ form.role(class="form-control form-control-md") }}</td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>{{ form.picture.label() }}</td>
+              <td>{{ form.picture(class="form-control-file") }}</td>
+              {% if form.picture.errors %}
+              <td>
+                {{ form.picture(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.picture.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td></td>
+              <td class="form-group">
+                {{ form.submit(class="btn btn-success") }}
+              </td>
+            </tr>
+          </tbody>
+        </table> 
+    </div>
+  </form>
+</div>
+
+{% endif %}
+<div class="col-md-12 mb-5">
+  <div class="row">
+    <table>
+      <thead>
+        <tr>
+          <th>CODE</th>
+          <th>FROM</th>
+          <th>TO</th>
+          <th>BASIC SALARY</th>  
+          <th>PAYMENT</th> 
+          <th>DATE PAID</th>
+          <th>DATE CREATED</th> 
+          <th>STATUS</th>
+          <th>OPTION</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for receipt in receipts %}
+        <tr> 
+          <td>{{ receipt.id }}</td>
+          <td>{{ receipt.from_date.strftime("%m-%d-%Y") }}</td>
+          <td>{{ receipt.to_date.strftime("%m-%d-%Y") }}</td> 
+          <td>{{ "$ %.2f"|format(receipt.basic_salary |float) }}</td>
+          <td>{{ "$ %.2f"|format(receipt.money) }}</td>
+          <td>{{ receipt.created_user.first_name + ' '+ receipt.created_user.last_name }}</td>
+          <td>{{ receipt.created_date.strftime("%m-%d-%Y") }}</td> 
+          <td>
+            {% if receipt.is_activate %}
+            <div class="circle check"></div>
+            {% else %}
+            <div class="circle uncheck"></div>
+            {% endif %}
+          </td>
+          <td>
+            <a href="#detail" onclick="getDetailReceipt(this)"
+              ><input type="text" style="display:none" value='{{ receipt.id }}' ><i class="fas fa-eye"></i
+            ></a>
+            {% if not receipt.status  %}
+              <a href="{{url_for('student.update_receipt',id=receipt.id)}}"
+                ><i class="fas fa-edit"></i
+              ></a>
+            {% endif %}
+            {% if current_user.user.role.name == 'admin' %}
+            <a
+              href="{{url_for('educate.remove_student',id_course=id_course,id=staff.id)}}"
+              ><i class="fas fa-trash-alt"></i
+            ></a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script
+  src="{{ url_for('static', filename='js/student_info.js') }}"
+  crossorigin="anonymous"
+></script>
+{% endblock content %}
