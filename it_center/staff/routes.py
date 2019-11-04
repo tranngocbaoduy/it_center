@@ -12,93 +12,94 @@ staff = Blueprint('staff', __name__)
 @staff.route('/staff/<string:page>', methods=['GET', 'POST'])
 @login_required
 def index(page):       
-    if current_user.user.role.name != 'admin': 
+    if current_user.user.role.name == 'admin' or current_user.user.role.name == 'cashier': 
+        activate = list(range(10))
+        activate[4] = "active"  
+        page = int(page) 
+        role_academic = Role.objects(name='academic').first()
+        role_cashier = Role.objects(name='cashier').first()
+        if page is None or page == 1:
+            page = request.args.get('page', 1, type=int) 
+            users_1 = User.objects(role=role_academic,is_activate=True).limit(5) 
+            users_2 = User.objects(role=role_cashier,is_activate=True).limit(5) 
+        elif page <=-1:
+            page = int((User.objects(role=role,is_activate=True).count()-10) /10) + 2   
+            num_skip= User.objects(role=role).count()-5
+            if num_skip < 0: num_skip = 0
+            users_1 = User.objects(role=role_academic,is_activate=True).skip(num_skip)
+            users_2 = User.objects(role=role_cashier,is_activate=True).skip(num_skip)
+        else:
+            users_1 = User.objects(role=role_academic,is_activate=True).skip(page*5-5).limit(5)
+            users_2 = User.objects(role=role_cashier,is_activate=True).skip(page*5-5).limit(5)  
+        
+        users = list()
+        for item in users_1:
+            users.append(item)
+
+        for item in users_2:
+            users.append(item) 
+        return render_template('staff.html', title='Staff',activate=activate,users=users,page_num=page)  
+    else:
         flash('You\'re not admin. You can not access this page')
         return redirect(url_for('main.index'))
-    activate = list(range(10))
-    activate[4] = "active"  
-    page = int(page) 
-    role_academic = Role.objects(name='academic').first()
-    role_cashier = Role.objects(name='cashier').first()
-    if page is None or page == 1:
-        page = request.args.get('page', 1, type=int) 
-        users_1 = User.objects(role=role_academic,is_activate=True).limit(5) 
-        users_2 = User.objects(role=role_cashier,is_activate=True).limit(5) 
-    elif page <=-1:
-        page = int((User.objects(role=role,is_activate=True).count()-10) /10) + 2   
-        num_skip= User.objects(role=role).count()-5
-        if num_skip < 0: num_skip = 0
-        users_1 = User.objects(role=role_academic,is_activate=True).skip(num_skip)
-        users_2 = User.objects(role=role_cashier,is_activate=True).skip(num_skip)
-    else:
-        users_1 = User.objects(role=role_academic,is_activate=True).skip(page*5-5).limit(5)
-        users_2 = User.objects(role=role_cashier,is_activate=True).skip(page*5-5).limit(5)  
-     
-    users = list()
-    for item in users_1:
-        users.append(item)
-
-    for item in users_2:
-        users.append(item) 
-    return render_template('staff.html', title='Staff',activate=activate,users=users,page_num=page)  
     
 @staff.route("/staff/info/<string:id>", methods=['GET', 'POST']) 
 @login_required
 def staff_info(id):  
-    if current_user.user.role.name != 'admin': 
+    if current_user.user.role.name == 'admin' or current_user.user.role.name == 'cashier': 
+        activate = list(range(10))
+        activate[4] = "active"
+        is_activate = True
+        if current_user.is_authenticated:
+            user = User.objects(id=id,is_activate=True).first()  
+            form = UpdateStaffForm()  
+            if id is None or user is None:
+                return redirect(url_for('staff.index',page=1))  
+            if form.validate_on_submit():
+                if form.picture.data:
+                    picture_file = save_picture(form.picture.data)
+                    user.image_file = picture_file
+                user.first_name=form.first_name.data 
+                user.last_name=form.last_name.data 
+                user.phone =form.phone.data 
+                user.email =form.email.data
+                user.salary =form.salary.data
+                user.address =form.address.data
+                user.birth =form.birth.data 
+                user.gender = form.gender.data  
+                role = form.role.data
+                if role == 'cashier' or role == 'academic':
+                    role = Role.objects(name=role).first()
+                    # print(role.name)  
+                    user.role = role
+                    # print(user.role.id,role.id)
+                else:  
+                    flash('Can\'t find role, please reload page', 'danger')
+                    return redirect(url_for('staff.staff_info',id=id))
+                    
+                user.save()
+                flash('Staff has been updated!', 'success')
+                return redirect(url_for('staff.staff_info',id=id))
+            elif request.method == 'GET':
+                form.first_name.data = user.first_name
+                form.last_name.data = user.last_name
+                form.phone.data = user.phone
+                form.email.data = user.email
+                form.salary.data = user.salary
+                form.address.data = user.address 
+                form.gender.data = user.gender 
+                form.birth.data = user.birth
+                form.role.data = user.role 
+            receipts = PaymentReceipt.objects(staff=user)
+            account = Account.objects(user=user).first()
+            if account and account.is_activate == False:
+                flash('Account of staff hasn\'t been acitved yet !!', 'info')  
+                is_activate = False
+            return render_template('staff_info.html', title='Staff Info',activate=activate,staff=user,form=form,receipts=receipts,is_activate = is_activate)
+        return redirect(url_for('staff.index',page=1))
+    else:
         flash('You\'re not admin. You can not access this page')
         return redirect(url_for('main.index'))
-    activate = list(range(10))
-    activate[4] = "active"
-    is_activate = True
-    if current_user.is_authenticated:
-        user = User.objects(id=id,is_activate=True).first()  
-        form = UpdateStaffForm()  
-        if id is None or user is None:
-            return redirect(url_for('staff.index',page=1))  
-        if form.validate_on_submit():
-            if form.picture.data:
-                picture_file = save_picture(form.picture.data)
-                user.image_file = picture_file
-            user.first_name=form.first_name.data 
-            user.last_name=form.last_name.data 
-            user.phone =form.phone.data 
-            user.email =form.email.data
-            user.salary =form.salary.data
-            user.address =form.address.data
-            user.birth =form.birth.data 
-            user.gender = form.gender.data  
-            role = form.role.data
-            if role == 'cashier' or role == 'academic':
-                role = Role.objects(name=role).first()
-                # print(role.name)  
-                user.role = role
-                # print(user.role.id,role.id)
-            else:  
-                flash('Can\'t find role, please reload page', 'danger')
-                return redirect(url_for('staff.staff_info',id=id))
-                
-            user.save()
-            flash('Staff has been updated!', 'success')
-            return redirect(url_for('staff.staff_info',id=id))
-        elif request.method == 'GET':
-            form.first_name.data = user.first_name
-            form.last_name.data = user.last_name
-            form.phone.data = user.phone
-            form.email.data = user.email
-            form.salary.data = user.salary
-            form.address.data = user.address 
-            form.gender.data = user.gender 
-            form.birth.data = user.birth
-            form.role.data = user.role 
-        receipts = PaymentReceipt.objects(staff=user)
-        account = Account.objects(user=user).first()
-        if account and account.is_activate == False:
-            flash('Account of staff hasn\'t been acitved yet !!', 'info')  
-            is_activate = False
-        return render_template('staff_info.html', title='Staff Info',activate=activate,staff=user,form=form,receipts=receipts,is_activate = is_activate)
-    return redirect(url_for('staff.index',page=1))
-   
 
 @staff.route("/staff/create", methods=['GET', 'POST']) 
 @login_required

@@ -17,11 +17,13 @@
     <a href="{{url_for('student.index',page=1)}}" class="btn btn-green"
       >Back manage student</a
     >
+    {% if current_user.user.role.name != 'academic' %}
     <a
       href="{{url_for('student.create_receipt',id=student.id)}}"
       class="btn btn-blue ml-3"
       >Register</a
     >
+    {% endif %}
         <!-- {% if current_user.user.role.name == 'admin' %}
                       <a href="#"><i class="fas fa-trash-alt"></i></a>
                       {% endif %} -->

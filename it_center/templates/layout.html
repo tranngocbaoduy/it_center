@@ -51,7 +51,7 @@
           ><i class="fas fa-list"></i>Educate</a
         >
         
-        {% if current_user.user.role.name == 'admin' %}
+        {% if current_user.user.role.name == 'admin' or current_user.user.role.name == 'cashier' %}
         <a href="{{ url_for('staff.index',page=1) }}" class="{{ activate[4] }}"
           ><i class="fas fa-users"></i>Staff</a
         > 

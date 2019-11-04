@@ -17,11 +17,13 @@
     <a href="{{url_for('teacher.index',page=1)}}" class="btn btn-green"
       >Back manage teacher</a
     >
+    {% if current_user.user.role.name == 'admin' or current_user.user.role.name == 'cashier'  %}
     <a
       href="{{url_for('teacher.create_receipt',id=teacher.id)}}"
       class="btn btn-blue ml-3"
       >Payment</a
     > 
+    {% endif %}
     {% if current_user.user.role.name == 'admin' %}
       <a
         href="{{url_for('teacher.remove',id=teacher.id)}}"

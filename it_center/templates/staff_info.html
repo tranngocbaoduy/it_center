@@ -72,7 +72,11 @@
               </td>
               {% else %}
               <td>
-                {{ form.first_name(class="form-control form-control-md") }}
+                {% if current_user.user.role.name == 'admin' %}
+                  {{ form.first_name(class="form-control form-control-md") }}
+                {% else %}
+                  {{ form.first_name(class="form-control form-control-md", readonly= True) }}
+                {% endif %}
               </td>
               {% endif %}
             </tr>
@@ -89,7 +93,11 @@
               </td>
               {% else %}
               <td>
-                {{ form.last_name(class="form-control form-control-md") }}
+                {% if current_user.user.role.name == 'admin' %}
+                  {{ form.last_name(class="form-control form-control-md") }}
+                {% else %}
+                  {{ form.last_name(class="form-control form-control-md", readonly= True) }}
+                {% endif %}
               </td>
               {% endif %}
             </tr>
@@ -105,7 +113,13 @@
                 </div>
               </td>
               {% else %}
-              <td>{{ form.email(class="form-control form-control-md") }}</td>
+              <td>
+                {% if current_user.user.role.name == 'admin' %}
+                  {{ form.email(class="form-control form-control-md") }}
+                {% else %}
+                  {{ form.email(class="form-control form-control-md", readonly= True) }}
+                {% endif %}
+              </td>
               {% endif %}
             </tr>
             <tr>
@@ -120,7 +134,13 @@
                 </div>
               </td>
               {% else %}
-              <td>{{ form.phone(class="form-control form-control-md") }}</td>
+              <td>
+                {% if current_user.user.role.name == 'admin' %}
+                  {{ form.phone(class="form-control form-control-md") }}
+                {% else %}
+                  {{ form.phone(class="form-control form-control-md", readonly= True) }}
+                {% endif %}  
+              </td>
               {% endif %}
             </tr>
             <tr>
@@ -136,7 +156,11 @@
               </td>
               {% else %}
               <td>
-                {{ form.address(class="form-control form-control-md") }}
+                {% if current_user.user.role.name == 'admin' %}
+                  {{ form.address(class="form-control form-control-md") }}
+                {% else %}
+                  {{ form.address(class="form-control form-control-md", readonly= True) }}
+                {% endif %}
               </td>
               {% endif %}
             </tr>
@@ -152,8 +176,8 @@
                 </div>
               </td>
               {% else %}
-              <td>
-                {{ form.birth(class="datepicker form-control form-control-md") }}
+              <td> 
+                  {{ form.birth(class="datepicker form-control form-control-md") }} 
               </td>
               {% endif %}
             </tr>
@@ -169,7 +193,13 @@
                 </div>
               </td>
               {% else %}
-              <td>{{ form.gender(class="form-control form-control-md") }}</td>
+              <td>
+                {% if current_user.user.role.name == 'admin' %}
+                  {{ form.gender(class="form-control form-control-md") }}
+                {% else %}
+                  {{ form.gender(class="form-control form-control-md", readonly= True) }}
+                {% endif %}
+              </td>
               {% endif %}
             </tr>
             <tr>
@@ -184,7 +214,13 @@
                 </div>
               </td>
               {% else %}
-              <td>{{ form.salary(class="form-control form-control-md") }}</td>
+              <td>
+                {% if current_user.user.role.name == 'admin' %}
+                  {{ form.salary(class="form-control form-control-md") }}
+                {% else %}
+                  {{ form.salary(class="form-control form-control-md", readonly= True) }}
+                {% endif %}
+              </td>
               {% endif %}
             </tr>
             
@@ -200,12 +236,22 @@
                 </div>
               </td>
               {% else %}
-              <td>{{ form.role(class="form-control form-control-md") }}</td>
+              <td>
+                {% if current_user.user.role.name == 'admin' %}
+                  {{ form.role(class="form-control form-control-md") }}
+                {% else %}
+                  {{ form.role(class="form-control form-control-md", readonly= True) }}
+                {% endif %}
+              </td>
               {% endif %}
             </tr>
-            <tr>
+            {% if current_user.user.role.name == 'admin' %}
+            <tr> 
               <td>{{ form.picture.label() }}</td>
-              <td>{{ form.picture(class="form-control-file") }}</td>
+              <td>
+               
+                  {{ form.picture(class="form-control-file") }}
+              </td>
               {% if form.picture.errors %}
               <td>
                 {{ form.picture(class="form-control form-control-md is-invalid") }}
@@ -216,11 +262,14 @@
                 </div>
               </td>
               {% endif %}
-            </tr>
+            </tr> 
+            {% endif %}
             <tr>
               <td></td>
               <td class="form-group">
-                {{ form.submit(class="btn btn-success") }}
+                {% if current_user.user.role.name == 'admin' %}
+                  {{ form.submit(class="btn btn-success") }}
+                {% endif %}
               </td>
             </tr>
           </tbody>
@@ -243,7 +292,7 @@
           <th>DATE PAID</th>
           <th>DATE CREATED</th> 
           <th>STATUS</th>
-          <th>OPTION</th>
+          <!-- <th>OPTION</th> -->
         </tr>
       </thead>
       <tbody>
@@ -255,7 +304,7 @@
           <td>{{ "$ %.2f"|format(receipt.basic_salary |float) }}</td>
           <td>{{ "$ %.2f"|format(receipt.money) }}</td>
           <td>{{ receipt.created_user.first_name + ' '+ receipt.created_user.last_name }}</td>
-          <td>{{ receipt.created_date.strftime("%m-%d-%Y") }}</td> 
+          <td>{{ receipt.created_date }}</td> 
           <td>
             {% if receipt.is_activate %}
             <div class="circle check"></div>
@@ -263,7 +312,7 @@
             <div class="circle uncheck"></div>
             {% endif %}
           </td>
-          <td>
+          <!-- <td>
             <a href="#detail" onclick="getDetailReceipt(this)"
               ><input type="text" style="display:none" value='{{ receipt.id }}' ><i class="fas fa-eye"></i
             ></a>
@@ -278,7 +327,7 @@
               ><i class="fas fa-trash-alt"></i
             ></a>
             {% endif %}
-          </td>
+          </td> -->
         </tr>
         {% endfor %}
       </tbody>
